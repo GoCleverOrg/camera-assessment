@@ -625,6 +625,28 @@ it('should assess camera quality based on resolution', () => {
 - Reference issues when applicable
 - Include test status: `test: ✅ camera auto-config scenarios`
 
+## Backward Compatibility Policy
+
+### No Backward Compatibility Required
+
+**This project does NOT maintain backward compatibility.** When refactoring or improving code:
+
+- ✅ **ALWAYS** remove unused, old, and legacy code
+- ✅ **ALWAYS** clean up deprecated functions and types
+- ✅ **ALWAYS** update all references to use new APIs
+- ✅ **ALWAYS** remove compatibility shims and adapters
+- ❌ **NEVER** keep old function signatures "just in case"
+- ❌ **NEVER** maintain deprecated APIs
+- ❌ **NEVER** add compatibility layers
+
+### Clean Code Principles
+
+1. **Remove dead code**: If it's not used, delete it
+2. **Update everything**: Change all references in one go
+3. **Clean imports**: Remove unused imports after refactoring
+4. **Simplify APIs**: Take the opportunity to improve interfaces
+5. **Document changes**: Update CHANGELOG.md with breaking changes
+
 ## 🎯 Slash Commands for Parallel Workflows
 
 Create these in `.claude/commands/` for repeated parallel patterns:
