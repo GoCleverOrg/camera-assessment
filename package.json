@@ -15,7 +15,7 @@
     "format:check": "prettier --check \"src/**/*.ts\"",
     "typecheck": "tsc --noEmit",
     "clean": "rm -rf dist coverage",
-    "validate": "pnpm run typecheck && pnpm run lint && pnpm run format:check && pnpm test"
+    "validate": "pnpm run typecheck && pnpm run lint && pnpm run format:check && pnpm run test:coverage"
   },
   "keywords": [],
   "author": "",

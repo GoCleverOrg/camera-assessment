@@ -12,10 +12,25 @@ module.exports = {
     '!src/**/*.d.ts',
     '!src/**/*.test.ts',
     '!src/**/*.spec.ts',
-    '!src/**/index.ts',
+    '!src/**/__tests__/**',
   ],
   coverageDirectory: 'coverage',
   coverageReporters: ['text', 'lcov', 'html'],
+  coverageThreshold: {
+    global: {
+      branches: 80,
+      functions: 80,
+      lines: 80,
+      statements: 80,
+    },
+    // Critical path - 100% coverage when src/core/ exists
+    // './src/core/': {
+    //   branches: 100,
+    //   functions: 100,
+    //   lines: 100,
+    //   statements: 100,
+    // },
+  },
   moduleFileExtensions: ['ts', 'js', 'json', 'node'],
   verbose: true,
 };
