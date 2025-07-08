@@ -12,7 +12,9 @@
       "Bash(npm run lint:*)",
       "Bash(npm run typecheck:*)",
       "Bash(pnpm install:*)",
-      "Bash(pnpm run:*)"
+      "Bash(pnpm run:*)",
+      "Bash(pnpm test:*)",
+      "Bash(node:*)"
     ],
     "deny": []
   }

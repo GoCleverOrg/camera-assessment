@@ -3,7 +3,7 @@ module.exports = {
   preset: 'ts-jest',
   testEnvironment: 'node',
   roots: ['<rootDir>/src'],
-  testMatch: ['**/__tests__/**/*.ts', '**/?(*.)+(spec|test).ts'],
+  testMatch: ['**/__tests__/**/*.test.ts', '**/__tests__/**/*.spec.ts'],
   transform: {
     '^.+\\.ts$': 'ts-jest',
   },
@@ -24,12 +24,12 @@ module.exports = {
       statements: 80,
     },
     // Critical path - 100% coverage when src/core/ exists
-    // './src/core/': {
-    //   branches: 100,
-    //   functions: 100,
-    //   lines: 100,
-    //   statements: 100,
-    // },
+    './src/core/': {
+      branches: 90,
+      functions: 100,
+      lines: 100,
+      statements: 100,
+    },
   },
   moduleFileExtensions: ['ts', 'js', 'json', 'node'],
   verbose: true,

@@ -1,12 +1,13 @@
 import { describe, it, expect } from '@jest/globals';
-import { greet } from '../index';
+import { computeMaxDistance } from '../index';
 
-describe('greet', () => {
-  it('should return a greeting message', () => {
-    expect(greet('World')).toBe('Hello, World!');
+describe('index exports', () => {
+  it('should export computeMaxDistance function', () => {
+    expect(computeMaxDistance).toBeDefined();
+    expect(typeof computeMaxDistance).toBe('function');
   });
 
-  it('should work with different names', () => {
-    expect(greet('TypeScript')).toBe('Hello, TypeScript!');
+  it('should work with the exported function', () => {
+    expect(computeMaxDistance(1, 2000)).toBe(0);
   });
 });
