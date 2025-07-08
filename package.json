@@ -14,13 +14,15 @@
     "format": "prettier --write \"src/**/*.ts\"",
     "format:check": "prettier --check \"src/**/*.ts\"",
     "typecheck": "tsc --noEmit",
-    "clean": "rm -rf dist coverage"
+    "clean": "rm -rf dist coverage",
+    "validate": "pnpm run typecheck && pnpm run lint && pnpm run format:check && pnpm test"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "description": "",
   "devDependencies": {
+    "@eslint/js": "^9.30.1",
     "@jest/globals": "^30.0.4",
     "@types/jest": "^30.0.0",
     "@types/node": "^24.0.10",
@@ -32,6 +34,7 @@
     "jest": "^30.0.4",
     "prettier": "^3.6.2",
     "ts-jest": "^29.4.0",
-    "typescript": "^5.8.3"
+    "typescript": "^5.8.3",
+    "typescript-eslint": "^8.36.0"
   }
 }

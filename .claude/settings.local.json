@@ -5,7 +5,14 @@
       "Bash(find:*)",
       "Bash(npm init:*)",
       "Bash(npm install:*)",
-      "Bash(mkdir:*)"
+      "Bash(mkdir:*)",
+      "Bash(npm test)",
+      "Bash(npm run lint)",
+      "Bash(rm:*)",
+      "Bash(npm run lint:*)",
+      "Bash(npm run typecheck:*)",
+      "Bash(pnpm install:*)",
+      "Bash(pnpm run:*)"
     ],
     "deny": []
   }
