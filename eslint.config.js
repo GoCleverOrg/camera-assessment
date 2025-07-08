@@ -33,6 +33,6 @@ module.exports = tseslint.config(
     },
   },
   {
-    ignores: ['dist/**', 'coverage/**', 'node_modules/**', 'jest.config.js', 'eslint.config.js'],
+    ignores: ['dist/**', 'coverage/**', 'node_modules/**', 'jest.config.js', 'eslint.config.js', 'examples/**'],
   }
 );

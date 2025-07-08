@@ -17,3 +17,11 @@ export const SENSOR_HEIGHT = 2 * F_MIN * Math.tan(((FOV_VERTICAL / 2) * Math.PI)
 export const ANGLE_TOLERANCE = 1e-6;
 export const PIXEL_TOLERANCE = 0.01;
 export const DISTANCE_TOLERANCE = 0.001;
+
+// Rendering constants
+export const STRIP_LINE_THICKNESS = 2;
+export const STRIP_COLOR_OPAQUE = '#FF0000';
+export const STRIP_COLOR_TRANSPARENT = '#00FF00';
+export const HIGHLIGHT_COLOR = '#FFFF00';
+export const TEXT_COLOR = '#FFFFFF';
+export const TEXT_OUTLINE_COLOR = '#000000';

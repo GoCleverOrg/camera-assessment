@@ -1,0 +1,6 @@
+@PLAN.md I want you to improve the the existing cli flag to support receiving the the zooms as a rage, e.g. 1-5 (meaning zoom 1, 2, 3, 4, 5). For those cases, data should be presented in a table format and if the image flag is provided, multiple images should be generated (sufixing the zoom level to the name of the image).
+
+
+@PLAN.md I want you to improve the existing system so that zoom parameter becomes an optimal parameter. If it's not provided the camera should find the min zoom level that satisfies its goal for example if you run the actual system with multiple zoom levels (1 decimal place) you'll notice that for a gap of 10px the zoom min zoom level that maximizes the distance is `4.1`. All the numbers bellow that number, do not provide such a longer distance, all the numbers above that number, do not provide improve the distance. Also it's important that the Camaera Analysis Results in the cli (and the function) return not only the docal length but also the zoom level that was used to achieve the distance (if zoom is provided that value should be returned).
+
+@PLAN.md I want you to write a proper README so that an AI Agent and a human know how to use this tool. It should be a markdown file easy to read and understand docused in the available cli API and all the supported use cases.

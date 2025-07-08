@@ -16,7 +16,12 @@
       "Bash(pnpm test:*)",
       "Bash(node:*)",
       "Bash(pnpm add:*)",
-      "Bash(pnpm remove:*)"
+      "Bash(pnpm remove:*)",
+      "Bash(npx tsx:*)",
+      "Bash(npx ts-node:*)",
+      "Bash(chmod:*)",
+      "Bash(ts-node:*)",
+      "Bash(git add:*)"
     ],
     "deny": []
   }
