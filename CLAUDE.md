@@ -2,10 +2,46 @@
 
 Guidelines for Claude Code when working with the camera-assessment TypeScript library.
 
+## 🚀 CRITICAL: Parallel Work & Subagent Strategy
+
+### Always Use Parallel Execution When Possible
+
+1. **Launch Multiple Subagents**: Use the Task tool to run 4-10 parallel tasks
+   - Example: "Explore the codebase using 5 tasks in parallel"
+   - Each subagent gets its own context window (maximize efficiency)
+   - Queue tasks if needed (system handles up to 100+ tasks)
+
+2. **Subagent Task Distribution**:
+   - Assign tasks based on independence and parallelizability
+   - Let task requirements determine specializations
+   - Focus on maximizing concurrent execution
+   - Avoid artificial role assignments
+
+3. **Extended Thinking Mode**:
+   - Use "think" for standard problems
+   - Use "think hard" for complex derivations
+   - Use "think harder" for architectural decisions
+   - Use "ultrathink" for critical optimization problems
+
+4. **Context Management**:
+   - Use `/clear` between major phases
+   - Use `/compact` when context > 70% full
+   - Create checkpoints after each subagent completes
+
+### Implementation Planning Requirements
+
+**NEVER execute a plan directly!** Instead:
+1. First create a detailed implementation plan document
+2. Break down into parallel subtasks with clear boundaries
+3. Assign specialized subagents to each task
+4. Define synchronization points
+5. Include verification steps for each deliverable
+
 ## Quick TDD/BDD Reference
 
 ### 🔴 Red → 🟢 Green → 🔵 Refactor → ✅ Validate
 
+#### Sequential Workflow (Single Agent)
 ```bash
 # 1. Create test file first
 touch src/__tests__/feature.test.ts
@@ -24,6 +60,21 @@ pnpm run validate  # Must pass ALL checks!
 
 # 6. Commit only when validation passes
 git add . && git commit -m "test: add feature test"
+```
+
+#### 🚀 Parallel Workflow (Multiple Subagents) - PREFERRED
+```bash
+# Identify independent tasks that can run in parallel
+# Launch appropriate number of subagents (3-10 based on task complexity)
+# Each subagent works on independent aspects simultaneously
+# Synchronize at natural convergence points
+# Combine results and proceed to next phase
+
+# Benefits:
+# - 2-3x faster execution
+# - Better context management
+# - Reduced cognitive load per agent
+# - Natural task boundaries
 ```
 
 ### Validation Checklist ✓
@@ -573,3 +624,40 @@ it('should assess camera quality based on resolution', () => {
 - Types: `feat`, `fix`, `test`, `refactor`, `docs`, `chore`
 - Reference issues when applicable
 - Include test status: `test: ✅ camera auto-config scenarios`
+
+## 🎯 Slash Commands for Parallel Workflows
+
+Create these in `.claude/commands/` for repeated parallel patterns:
+
+### parallel-implementation.md
+```markdown
+Execute implementation using parallel subagents:
+- Identify all independent tasks
+- Launch subagents for tasks that can run concurrently
+- Each agent focuses on their assigned scope
+- Report progress at defined checkpoints
+- Synchronize when dependencies require coordination
+
+$ARGUMENTS: Feature or component to implement
+```
+
+### parallel-testing.md
+```markdown
+Run comprehensive testing in parallel:
+- Distribute test suites across multiple agents
+- Each agent handles specific test categories
+- Aggregate results at completion
+- Identify any failing tests or coverage gaps
+
+$ARGUMENTS: Test scope or specific test suites
+```
+
+## 📋 Parallel Execution Best Practices
+
+1. **Always think in parallel**: Can this task be split?
+2. **Specialize subagents**: Give each a specific expertise
+3. **Define clear boundaries**: Prevent overlap and conflicts  
+4. **Use checkpoints**: Synchronize at natural breakpoints
+5. **Leverage context windows**: Each subagent = fresh context
+6. **Queue liberally**: System handles 100+ tasks efficiently
+7. **Document decisions**: Subagents can't see each other's work
