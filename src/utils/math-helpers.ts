@@ -1,4 +1,4 @@
-import { F_MIN, F_MAX } from './constants';
+import { F_MIN } from './constants';
 
 export function degToRad(degrees: number): number {
   return (degrees * Math.PI) / 180;
@@ -6,10 +6,6 @@ export function degToRad(degrees: number): number {
 
 export function radToDeg(radians: number): number {
   return (radians * 180) / Math.PI;
-}
-
-export function getFocalLength(zoomLevel: number): number {
-  return Math.min(F_MIN * zoomLevel, F_MAX);
 }
 
 export function computeSensorDimensions() {

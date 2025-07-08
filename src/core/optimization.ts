@@ -1,6 +1,7 @@
 import { ProjectionParams } from '../types/camera-types';
 import { CAMERA_HEIGHT, LINE_SPACING, SENSOR_RES_Y, DISTANCE_TOLERANCE } from '../utils/constants';
 import { projectGroundPoint, computePixelGap } from './projection';
+import { Angle } from '../types/angle';
 
 export function findOptimalTilt(targetDistance: number, focalLength: number): number {
   // Initial estimate: angle to look at target point
@@ -66,4 +67,81 @@ export function findMaximumDistance(focalLength: number, minPixelGap: number): n
   }
 
   return Math.floor(left / LINE_SPACING) * LINE_SPACING;
+}
+
+// New interfaces for returning detailed results
+export interface OptimalTiltResult {
+  tiltRadians: number;
+  tiltAngle: Angle;
+}
+
+export interface MaximumDistanceResult {
+  distance: number;
+  optimalAngle: Angle;
+  lineCount: number;
+}
+
+export function findOptimalTiltWithAngle(
+  targetDistance: number,
+  focalLength: number,
+): OptimalTiltResult {
+  const tiltRadians = findOptimalTilt(targetDistance, focalLength);
+  return {
+    tiltRadians,
+    tiltAngle: new Angle(tiltRadians),
+  };
+}
+
+export function findMaximumDistanceWithDetails(
+  focalLength: number,
+  minPixelGap: number,
+): MaximumDistanceResult {
+  let left = 0;
+  let right = 200; // Maximum reasonable distance
+
+  while (right - left > DISTANCE_TOLERANCE) {
+    const mid = (left + right) / 2;
+    const distance = Math.floor(mid / LINE_SPACING) * LINE_SPACING;
+
+    if (distance <= 0) {
+      left = mid;
+      continue;
+    }
+
+    const optimalTilt = findOptimalTilt(distance, focalLength);
+
+    const params: ProjectionParams = {
+      focalLength,
+      tiltAngle: optimalTilt,
+      cameraHeight: CAMERA_HEIGHT,
+    };
+
+    const gap = computePixelGap(distance, distance - LINE_SPACING, params);
+
+    if (gap >= minPixelGap) {
+      left = mid;
+    } else {
+      right = mid;
+    }
+  }
+
+  const finalDistance = Math.floor(left / LINE_SPACING) * LINE_SPACING;
+
+  // For zero distance, return zero angle
+  if (finalDistance === 0) {
+    return {
+      distance: 0,
+      optimalAngle: new Angle(0),
+      lineCount: 0,
+    };
+  }
+
+  // Get the optimal angle for the final distance
+  const finalOptimalTilt = findOptimalTilt(finalDistance, focalLength);
+
+  return {
+    distance: finalDistance,
+    optimalAngle: new Angle(finalOptimalTilt),
+    lineCount: finalDistance / LINE_SPACING,
+  };
 }

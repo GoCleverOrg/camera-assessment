@@ -1,4 +1,4 @@
-import { degToRad, radToDeg, getFocalLength, computeSensorDimensions } from '../utils/math-helpers';
+import { degToRad, radToDeg, computeSensorDimensions } from '../utils/math-helpers';
 
 describe('math helpers', () => {
   describe('degToRad', () => {
@@ -26,24 +26,6 @@ describe('math helpers', () => {
 
     it('converts π/2 radians to 90 degrees', () => {
       expect(radToDeg(Math.PI / 2)).toBeCloseTo(90, 10);
-    });
-  });
-
-  describe('getFocalLength', () => {
-    it('returns 4.8mm for zoom level 1', () => {
-      expect(getFocalLength(1)).toBe(4.8);
-    });
-
-    it('returns 120mm for zoom level 25', () => {
-      expect(getFocalLength(25)).toBe(120);
-    });
-
-    it('returns 48mm for zoom level 10', () => {
-      expect(getFocalLength(10)).toBe(48);
-    });
-
-    it('clamps at 120mm for zoom > 25', () => {
-      expect(getFocalLength(30)).toBe(120);
     });
   });
 

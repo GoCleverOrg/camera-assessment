@@ -15,7 +15,8 @@
       "Bash(pnpm run:*)",
       "Bash(pnpm test:*)",
       "Bash(node:*)",
-      "Bash(pnpm add:*)"
+      "Bash(pnpm add:*)",
+      "Bash(pnpm remove:*)"
     ],
     "deny": []
   }
