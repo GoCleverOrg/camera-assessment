@@ -4,7 +4,7 @@ Guidelines for Claude Code when working with the camera-assessment TypeScript li
 
 ## Quick TDD/BDD Reference
 
-### 🔴 Red → 🟢 Green → 🔵 Refactor
+### 🔴 Red → 🟢 Green → 🔵 Refactor → ✅ Validate
 
 ```bash
 # 1. Create test file first
@@ -19,9 +19,19 @@ pnpm test feature.test.ts
 # 4. Refactor and verify
 pnpm run typecheck && pnpm test
 
-# 5. Commit when green
+# 5. Run FULL validation before commit
+pnpm run validate  # Must pass ALL checks!
+
+# 6. Commit only when validation passes
 git add . && git commit -m "test: add feature test"
 ```
+
+### Validation Checklist ✓
+- [ ] TypeScript compiles without errors
+- [ ] ESLint passes with no violations
+- [ ] Prettier formatting is correct
+- [ ] All tests pass
+- [ ] Code coverage ≥ 80%
 
 **Remember: NO MOCKS, EVER!**
 
@@ -315,11 +325,40 @@ describe.each([
 ```
 
 ### Coverage Requirements
-- **Minimum 80% coverage**: For all new code
-- **100% coverage**: For critical paths and public APIs
-- **Branch coverage focus**: All decision paths tested
-- **Mutation testing**: Consider using Stryker for deeper quality
-- **Coverage exceptions**: Document why certain code is untested
+
+#### Enforced Coverage Thresholds
+The project enforces strict coverage requirements via Jest configuration:
+- **Global threshold**: 80% minimum for all metrics (branches, functions, lines, statements)
+- **Critical paths**: 100% coverage for `src/core/` when it exists
+- **Coverage failure**: Tests fail if thresholds are not met
+- **No commits allowed**: Cannot commit code below coverage thresholds
+
+#### Coverage Configuration
+```javascript
+// jest.config.js
+coverageThreshold: {
+  global: {
+    branches: 80,
+    functions: 80,
+    lines: 80,
+    statements: 80,
+  },
+  // Uncomment when src/core/ exists
+  // './src/core/': {
+  //   branches: 100,
+  //   functions: 100,
+  //   lines: 100,
+  //   statements: 100,
+  // },
+}
+```
+
+#### Coverage Best Practices
+- **Test critical paths first**: Ensure 100% coverage on essential functionality
+- **Branch coverage focus**: Test all conditional paths
+- **Meaningful tests**: Coverage without quality is meaningless
+- **Document exceptions**: If code cannot be tested, document why
+- **Regular coverage checks**: Run `pnpm run test:coverage` frequently
 
 ## Code Style
 
@@ -395,7 +434,94 @@ interface AssessmentOptions {
 - `pnpm run clean` - Remove artifacts
 
 ### Validation
-- `pnpm run validate` - Run all checks (typecheck, lint, format:check, test)
+- `pnpm run validate` - Run all checks (typecheck, lint, format:check, test:coverage)
+
+## Complete Validation Process
+
+### Pre-Commit Validation Workflow
+
+The `pnpm run validate` command runs a comprehensive validation pipeline that MUST pass before any commit:
+
+1. **Type Checking** (`pnpm run typecheck`)
+   - Ensures all TypeScript code is type-safe
+   - No implicit `any` types allowed
+   - Strict mode compliance required
+
+2. **Linting** (`pnpm run lint`)
+   - ESLint rules enforcement
+   - TypeScript-specific rules
+   - Code quality standards
+
+3. **Format Checking** (`pnpm run format:check`)
+   - Prettier formatting compliance
+   - Consistent code style
+   - No formatting deviations
+
+4. **Test Coverage** (`pnpm run test:coverage`)
+   - All tests must pass
+   - 80% minimum coverage threshold
+   - Coverage report generated
+
+### Validation Requirements
+
+```bash
+# Before ANY commit, run:
+pnpm run validate
+
+# If validation fails at ANY step:
+# 1. Fix the issue
+# 2. Re-run validation
+# 3. Only commit when ALL checks pass
+```
+
+### Common Validation Failures and Solutions
+
+| Failure Type | Error Message | Solution |
+|--------------|---------------|----------|
+| TypeScript | `error TS2322` | Fix type errors, avoid `any` |
+| ESLint | `✖ X problems` | Run `pnpm run lint:fix` |
+| Prettier | `Code style issues` | Run `pnpm run format` |
+| Jest Coverage | `threshold not met` | Write more tests until 80%+ |
+| Test Failure | `✕ test name` | Fix implementation or test |
+
+### Continuous Validation During Development
+
+```bash
+# Run in separate terminals for real-time feedback:
+pnpm run build:watch     # Terminal 1: TypeScript compiler
+pnpm run test:watch      # Terminal 2: Jest tests
+pnpm run typecheck       # Periodic: Type validation
+
+# Quick validation during development:
+pnpm run typecheck && pnpm test
+```
+
+### Coverage Validation Details
+
+When running `pnpm run validate`, the coverage check will:
+- Generate a coverage report in `coverage/` directory
+- Display coverage percentages in terminal
+- **FAIL if any metric is below 80%**
+- Block the validation pipeline on failure
+
+Example coverage output:
+```
+----------|---------|----------|---------|---------|
+File      | % Stmts | % Branch | % Funcs | % Lines |
+----------|---------|----------|---------|---------|
+All files |   85.71 |    83.33 |     100 |   85.71 |
+ index.ts |     100 |      100 |     100 |     100 |
+ camera.ts|   81.25 |       80 |     100 |   81.25 |
+----------|---------|----------|---------|---------|
+```
+
+### Validation Best Practices
+
+1. **Run validation frequently**: Don't wait until commit time
+2. **Fix issues immediately**: Don't accumulate validation debt
+3. **Understand failures**: Read error messages carefully
+4. **Use watch modes**: Get instant feedback during development
+5. **Never skip validation**: No exceptions to the process
 
 ## TDD/BDD Tips and Best Practices
 
