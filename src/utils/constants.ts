@@ -1,4 +1,4 @@
-export const CAMERA_HEIGHT = 20; // meters
+export const DEFAULT_CAMERA_HEIGHT = 20; // meters
 export const SENSOR_RES_X = 2560; // pixels
 export const SENSOR_RES_Y = 1440; // pixels
 export const LINE_SPACING = 2; // meters

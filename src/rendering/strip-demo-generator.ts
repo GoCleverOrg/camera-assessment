@@ -15,6 +15,7 @@ import { SENSOR_RES_X, SENSOR_RES_Y } from '../utils/constants';
  * @param minPixelGap - Minimum pixel gap required between strips
  * @param outputPath - File path where the generated image will be saved
  * @param transparentBackground - Whether to use transparent background (default: false)
+ * @param height - Camera height in meters (default: 20)
  * @returns Promise resolving to render result with output path and metadata
  * @throws NoVisibleStripsError if no strips are visible in the camera view
  * @throws ImageGenerationError if image rendering fails
@@ -38,9 +39,10 @@ export async function generateStripDemoImage(
   minPixelGap: number,
   outputPath: string,
   transparentBackground?: boolean,
+  height?: number,
 ): Promise<StripRenderResult> {
   // Step 1: Analyze camera view to detect visible strips
-  const analysis = analyzeCameraView(zoom, minPixelGap);
+  const analysis = analyzeCameraView(zoom, minPixelGap, height);
 
   // Step 2: Validate that we have visible strips
   if (analysis.lineCount < 1) {
@@ -50,7 +52,7 @@ export async function generateStripDemoImage(
   }
 
   // Step 3: Generate strip visualizations from the analysis
-  const stripVisualizations = generateStripVisualizations(analysis);
+  const stripVisualizations = generateStripVisualizations(analysis, height);
 
   // Step 4: Create composition options for rendering (no text overlays)
   const compositionOptions = {

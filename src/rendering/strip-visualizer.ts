@@ -2,7 +2,7 @@ import { CameraViewAnalysis } from '../types/assessment';
 import { StripVisualization } from '../types/rendering';
 import { ProjectionParams } from '../types/camera-types';
 import { projectGroundPoint } from '../core/projection';
-import { CAMERA_HEIGHT, LINE_SPACING, SENSOR_RES_Y } from '../utils/constants';
+import { DEFAULT_CAMERA_HEIGHT, LINE_SPACING, SENSOR_RES_Y } from '../utils/constants';
 
 /**
  * Generates strip visualizations for a camera view analysis.
@@ -12,10 +12,14 @@ import { CAMERA_HEIGHT, LINE_SPACING, SENSOR_RES_Y } from '../utils/constants';
  * as highlighted.
  *
  * @param analysis - The camera view analysis containing tilt angle, line count, and focal length
+ * @param cameraHeight - Camera height in meters (default: 20)
  * @returns Array of strip visualizations with pixel positions and highlight status
  * @throws Error if analysis contains invalid parameters
  */
-export function generateStripVisualizations(analysis: CameraViewAnalysis): StripVisualization[] {
+export function generateStripVisualizations(
+  analysis: CameraViewAnalysis,
+  cameraHeight?: number,
+): StripVisualization[] {
   // Validate input
   if (!analysis || typeof analysis !== 'object') {
     throw new Error('Invalid analysis object provided');
@@ -55,7 +59,7 @@ export function generateStripVisualizations(analysis: CameraViewAnalysis): Strip
   const projectionParams: ProjectionParams = {
     focalLength,
     tiltAngle: tiltAngleRadians,
-    cameraHeight: CAMERA_HEIGHT,
+    cameraHeight: cameraHeight ?? DEFAULT_CAMERA_HEIGHT,
   };
 
   const visualizations: StripVisualization[] = [];

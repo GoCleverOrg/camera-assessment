@@ -2,24 +2,10 @@
 
 
 
-I checked the implementation with o3-pro, especially on the math side of things, everything was good but the agent stated that the following bullets still require your attention:
 
-* **Numeric robustness** – When D approaches 500‑600 m, $\arctan(H/D)$ is only \~2.3°. Your code uses degrees; be sure to do trigonometry in radians and at double precision.
-* **Upper‑bound strategy** – If you left `right` at a fixed large value (e.g. 1000 m) that’s fine, but a more elegant approach is to **exponentially expand** the search window until the pixel‑gap test fails—guaranteeing no hard ceiling can be hit in the future.
-* **Unit tests** – Add regression tests such as
-
-  ```ts
-  expect(computeMaxDistance(25, 10)).toBeGreaterThan(450);
-  ```
-
-  to ensure the plateau can’t sneak back in.
-
-Please assess everything necessary, and tell me if we need to fix or improve anything (don't code, just assess).
+Are you able to create a new gh repo in the gocleverorg organization in my account (using `gh` terminal commands) and associate this repo to that gh repo? When you do that please check if you need to update any existing project documentation, eg. @README.md
 
 
 
-@PLAN.md I want you to write a proper README so that an AI Agent and a human know how to use this tool. It should be a markdown file easy to read and understand docused in the available cli API and all the supported use cases.
 
-
-
-Are you able to create a new gh repo in the gocleverorg organization in my account (using `gh` terminal commands) and associate this repo to that gh repo?
+We have markers defined as a constant every 2m. We want to @PLAN.md plan making this an optional cli parameter (default 2m), just like we did with @scripts/camera-height-parameter-plan.md 

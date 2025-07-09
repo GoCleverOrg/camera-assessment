@@ -68,11 +68,12 @@ describe('generateStripVisualizations', () => {
       // Use a realistic analysis from analyzeCameraView
       const analysis: CameraViewAnalysis = {
         distanceInMeters: 2, // One line at 2m
-        tiltAngle: Angle.fromDegrees(84.289), // Steep angle to see close line
+        tiltAngle: Angle.fromDegrees(45), // Correct angle for 2m camera at 2m distance
         lineCount: 1,
-        focalLength: 50,
+        focalLength: 10,
       };
-      const result = generateStripVisualizations(analysis);
+      // Use a lower camera height for this test since we're looking at 2m distance
+      const result = generateStripVisualizations(analysis, 2);
 
       expect(result).toHaveLength(1);
       expect(result[0].position).toBeGreaterThanOrEqual(0);
@@ -85,9 +86,9 @@ describe('generateStripVisualizations', () => {
       // Use more realistic parameters where lines are visible
       const analysis: CameraViewAnalysis = {
         distanceInMeters: 20, // 10 lines from 2m to 20m
-        tiltAngle: Angle.fromDegrees(60), // Moderate angle
+        tiltAngle: Angle.fromDegrees(50), // Slightly steeper to ensure all lines are visible
         lineCount: 10,
-        focalLength: 50,
+        focalLength: 10,
       };
       const result = generateStripVisualizations(analysis);
 
@@ -133,11 +134,11 @@ describe('generateStripVisualizations', () => {
     it('should handle tilt angle as plain number', () => {
       const analysis: CameraViewAnalysis = {
         distanceInMeters: 6,
-        tiltAngle: 1.39626 as unknown as Angle, // ~80 degrees in radians for better visibility
+        tiltAngle: 0.6947 as unknown as Angle, // ~40 degrees for 5m camera at 6m distance
         lineCount: 3,
-        focalLength: 50,
+        focalLength: 10,
       };
-      const result = generateStripVisualizations(analysis);
+      const result = generateStripVisualizations(analysis, 5); // Use 5m camera height
 
       expect(result.length).toBeGreaterThan(0);
     });

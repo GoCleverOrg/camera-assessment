@@ -58,6 +58,11 @@ export interface BatchProcessingOptions {
    * Whether to create images with transparent background.
    */
   transparent?: boolean;
+
+  /**
+   * Camera height in meters (default: 20).
+   */
+  height?: number;
 }
 
 /**
@@ -80,7 +85,7 @@ export async function processBatch(
       const zoom = new Zoom(zoomLevel);
 
       // Analyze camera view
-      const analysis = analyzeCameraView(zoom, options.gap);
+      const analysis = analyzeCameraView(zoom, options.gap, options.height);
 
       // Prepare result
       const result: BatchResult = {
@@ -109,6 +114,7 @@ export async function processBatch(
             options.gap,
             outputPath,
             options.transparent || false,
+            options.height,
           );
 
           result.imagePath = imageResult.outputPath;

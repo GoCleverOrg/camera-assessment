@@ -33,14 +33,14 @@ describe('Integration: Angle and Line Count Tracking', () => {
       const targetDistance = 20; // meters
       const focalLength = 48; // mm (zoom ~10)
 
-      const tiltResult = findOptimalTiltWithAngle(targetDistance, focalLength);
+      const tiltResult = findOptimalTiltWithAngle(targetDistance, focalLength, 20);
 
       expect(tiltResult.tiltRadians).toBeGreaterThan(0);
       expect(tiltResult.tiltAngle).toBeInstanceOf(Angle);
       expect(tiltResult.tiltAngle.radians).toBe(tiltResult.tiltRadians);
 
       // The angle should be appropriate for looking at 20m distance
-      const expectedAngleApprox = Math.atan2(targetDistance, 20); // CAMERA_HEIGHT = 20
+      const expectedAngleApprox = Math.atan2(targetDistance, 20); // DEFAULT_CAMERA_HEIGHT = 20
       expect(tiltResult.tiltRadians).toBeCloseTo(expectedAngleApprox, 1);
     });
 
@@ -101,7 +101,7 @@ describe('Integration: Angle and Line Count Tracking', () => {
       const focalLength = 24; // mm
       const minPixelGap = 30;
 
-      const result = findMaximumDistanceWithDetails(focalLength, minPixelGap);
+      const result = findMaximumDistanceWithDetails(focalLength, minPixelGap, 20);
 
       // Verify structure
       expect(result).toHaveProperty('distance');

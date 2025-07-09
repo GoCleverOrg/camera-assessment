@@ -2,17 +2,22 @@ import { Zoom } from './types/zoom';
 import { CameraViewAnalysis } from './types/assessment';
 import { ImpossibleConstraintError } from './errors/camera-errors';
 import { findMaximumDistanceWithDetails, findOptimalTiltWithAngle } from './core/optimization';
-import { SENSOR_RES_Y, LINE_SPACING } from './utils/constants';
+import { SENSOR_RES_Y, LINE_SPACING, DEFAULT_CAMERA_HEIGHT } from './utils/constants';
 
 /**
  * Analyzes the camera view for a given zoom level and minimum pixel gap requirement.
  *
  * @param zoom - The Zoom instance representing the camera's zoom level
  * @param minPixelGap - Minimum vertical pixel separation between consecutive lines
+ * @param height - Camera height in meters (default: 20)
  * @returns A CameraViewAnalysis object containing distance, tilt angle, line count, and focal length
  * @throws {ImpossibleConstraintError} When the minimum pixel gap exceeds the sensor height
  */
-export function analyzeCameraView(zoom: Zoom, minPixelGap: number): CameraViewAnalysis {
+export function analyzeCameraView(
+  zoom: Zoom,
+  minPixelGap: number,
+  height?: number,
+): CameraViewAnalysis {
   // Validate that the constraint is possible
   if (minPixelGap > SENSOR_RES_Y) {
     throw new ImpossibleConstraintError(
@@ -22,11 +27,12 @@ export function analyzeCameraView(zoom: Zoom, minPixelGap: number): CameraViewAn
 
   // Get focal length from the Zoom instance
   const focalLength = zoom.focalLength;
+  const cameraHeight = height ?? DEFAULT_CAMERA_HEIGHT;
 
   // Special case: when minPixelGap equals SENSOR_RES_Y, only one line can fit
   if (minPixelGap === SENSOR_RES_Y) {
     // Find optimal angle for viewing a single line at 2m distance
-    const { tiltAngle } = findOptimalTiltWithAngle(LINE_SPACING, focalLength);
+    const { tiltAngle } = findOptimalTiltWithAngle(LINE_SPACING, focalLength, cameraHeight);
     return {
       distanceInMeters: LINE_SPACING,
       tiltAngle: tiltAngle,
@@ -36,7 +42,7 @@ export function analyzeCameraView(zoom: Zoom, minPixelGap: number): CameraViewAn
   }
 
   // Use computeMaxDistanceDetailed logic through findMaximumDistanceWithDetails
-  const result = findMaximumDistanceWithDetails(focalLength, minPixelGap);
+  const result = findMaximumDistanceWithDetails(focalLength, minPixelGap, cameraHeight);
 
   // Return the analysis in the expected format
   return {

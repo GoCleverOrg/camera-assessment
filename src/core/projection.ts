@@ -5,19 +5,24 @@ export function projectGroundPoint(distance: number, params: ProjectionParams): 
   const { focalLength, tiltAngle, cameraHeight } = params;
 
   // Camera coordinates after rotation
-  const yCam = -cameraHeight * Math.cos(tiltAngle) + distance * Math.sin(tiltAngle);
-  const zCam = cameraHeight * Math.sin(tiltAngle) + distance * Math.cos(tiltAngle);
+  // Correct rotation matrix for pitch-down by tiltAngle (positive = down)
+  // For ground point at (0, -cameraHeight, distance) in world coordinates
+  const yCam = -cameraHeight * Math.cos(tiltAngle) - distance * Math.sin(tiltAngle);
+  const zCam = -cameraHeight * Math.sin(tiltAngle) + distance * Math.cos(tiltAngle);
 
-  // Avoid division by zero
-  if (Math.abs(zCam) < 1e-10) {
-    return { x: SENSOR_RES_X / 2, y: SENSOR_RES_Y / 2 };
+  // Sanity check: point must be in front of camera
+  if (zCam <= 0) {
+    throw new Error('Point behind the camera');
   }
 
-  // Project to image plane
+  // Project to image plane (in mm)
   const yImage = focalLength * (yCam / zCam);
 
   // Convert to pixel coordinates
-  const yPixel = (yImage / SENSOR_HEIGHT + 0.5) * SENSOR_RES_Y;
+  // yImage is negative for ground points, need to flip for screen coordinates
+  // Screen origin is top-left, so smaller yPixel = higher on screen = farther away
+  const normalizedY = -yImage / (SENSOR_HEIGHT / 2);
+  const yPixel = (0.5 + normalizedY / 2) * SENSOR_RES_Y;
 
   return {
     x: SENSOR_RES_X / 2, // Always centered horizontally

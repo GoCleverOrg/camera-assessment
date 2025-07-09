@@ -1,11 +1,11 @@
 import { findOptimalTiltWithAngle, findMaximumDistanceWithDetails } from '../core/optimization';
 import { Angle } from '../types/angle';
-import { LINE_SPACING } from '../utils/constants';
+import { LINE_SPACING, DEFAULT_CAMERA_HEIGHT } from '../utils/constants';
 
 describe('optimization refactored', () => {
   describe('findOptimalTiltWithAngle', () => {
     it('returns both tilt angle in radians and as Angle instance', () => {
-      const result = findOptimalTiltWithAngle(20, 4.8);
+      const result = findOptimalTiltWithAngle(20, 4.8, DEFAULT_CAMERA_HEIGHT);
 
       expect(result).toHaveProperty('tiltRadians');
       expect(result).toHaveProperty('tiltAngle');
@@ -16,7 +16,7 @@ describe('optimization refactored', () => {
     });
 
     it('calculates correct angle for edge cases', () => {
-      const result = findOptimalTiltWithAngle(1, 120);
+      const result = findOptimalTiltWithAngle(1, 120, DEFAULT_CAMERA_HEIGHT);
 
       expect(result.tiltAngle).toBeInstanceOf(Angle);
       expect(isNaN(result.tiltRadians)).toBe(false);
@@ -26,7 +26,7 @@ describe('optimization refactored', () => {
 
   describe('findMaximumDistanceWithDetails', () => {
     it('returns distance, angle, and line count', () => {
-      const result = findMaximumDistanceWithDetails(4.8, 10);
+      const result = findMaximumDistanceWithDetails(4.8, 10, DEFAULT_CAMERA_HEIGHT);
 
       expect(result).toHaveProperty('distance');
       expect(result).toHaveProperty('optimalAngle');
@@ -39,7 +39,7 @@ describe('optimization refactored', () => {
     });
 
     it('returns zero distance and line count for impossible constraints', () => {
-      const result = findMaximumDistanceWithDetails(4.8, 1000);
+      const result = findMaximumDistanceWithDetails(4.8, 1000, DEFAULT_CAMERA_HEIGHT);
 
       expect(result.distance).toBe(0);
       expect(result.lineCount).toBe(0);
@@ -48,7 +48,7 @@ describe('optimization refactored', () => {
     });
 
     it('calculates correct line count for valid distances', () => {
-      const result = findMaximumDistanceWithDetails(4.8, 10);
+      const result = findMaximumDistanceWithDetails(4.8, 10, DEFAULT_CAMERA_HEIGHT);
 
       expect(result.lineCount).toBeGreaterThan(0);
       expect(result.lineCount).toBe(Math.floor(result.distance / LINE_SPACING));
@@ -56,7 +56,7 @@ describe('optimization refactored', () => {
     });
 
     it('provides optimal angle used for the maximum distance', () => {
-      const result = findMaximumDistanceWithDetails(10, 15);
+      const result = findMaximumDistanceWithDetails(10, 15, DEFAULT_CAMERA_HEIGHT);
 
       expect(result.optimalAngle.radians).toBeGreaterThan(0);
       expect(result.optimalAngle.radians).toBeLessThan(Math.PI / 2);

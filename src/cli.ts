@@ -16,6 +16,7 @@ import { TableFormatter, TableRow } from './utils/table-formatter';
 interface CLIOptions {
   zoom: string;
   gap: number;
+  height?: number;
   generateImage?: boolean;
   output?: string;
   transparent?: boolean;
@@ -45,6 +46,13 @@ program
       return parsed;
     },
   )
+  .option('-h, --height <number>', 'Camera height in meters (default: 20)', (value) => {
+    const parsed = parseFloat(value);
+    if (isNaN(parsed) || parsed <= 0) {
+      throw new Error('Camera height must be a positive number');
+    }
+    return parsed;
+  })
   .option('-i, --generate-image', 'Generate a demonstration image showing visible strips')
   .option(
     '-o, --output <path>',
@@ -57,6 +65,7 @@ program
     `
 Examples:
   $ camera-assessment analyze -z 5 -g 10
+  $ camera-assessment analyze -z 5 -g 10 -h 15
   $ camera-assessment analyze -z "1-5" -g 10
   $ camera-assessment analyze -z "1,3,5,7" -g 10
   $ camera-assessment analyze -z "1-3,5,7-9" -g 10 --csv-output results.csv
@@ -82,7 +91,7 @@ Examples:
       // If single zoom value, use existing behavior
       if (zoomResult.values.length === 1) {
         const zoom = new Zoom(zoomResult.values[0]);
-        const analysis = analyzeCameraView(zoom, options.gap);
+        const analysis = analyzeCameraView(zoom, options.gap, options.height);
 
         // Display results with formatting
         // eslint-disable-next-line no-console
@@ -134,6 +143,7 @@ Examples:
             options.gap,
             outputPath,
             options.transparent || false,
+            options.height,
           );
 
           // eslint-disable-next-line no-console
@@ -158,6 +168,7 @@ Examples:
         // Use batch processor
         const results = await processBatch(zoomResult.values, {
           gap: options.gap,
+          height: options.height,
           generateImage: options.generateImage || false,
           outputBasePath: options.output || './output',
           transparent: options.transparent || false,
