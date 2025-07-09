@@ -113,7 +113,7 @@ describe('CLI zoom range support', () => {
     }
   });
 
-  it('should reject zoom values outside 1-25', async () => {
+  it('should reject zoom values below 1', async () => {
     try {
       await execAsync('node dist/cli.js analyze -z "0-5" -g 10');
       fail('Should have thrown an error');
@@ -125,13 +125,10 @@ describe('CLI zoom range support', () => {
       );
     }
 
-    try {
-      await execAsync('node dist/cli.js analyze -z "20-30" -g 10');
-      fail('Should have thrown an error');
-    } catch (error: unknown) {
-      const err = error as { stderr?: string; stdout?: string };
-      expect(err.stderr || err.stdout).toContain('out of range');
-    }
+    // Zoom values above 25 should now be accepted
+    const { stdout } = await execAsync('node dist/cli.js analyze -z "20-30" -g 10');
+    expect(stdout).toContain('| 20   |');
+    expect(stdout).toContain('| 30   |');
   });
 
   it('should handle spaces in zoom range', async () => {

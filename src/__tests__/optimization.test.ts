@@ -5,7 +5,7 @@ import {
 } from '../core/optimization';
 import { computePixelGap } from '../core/projection';
 import { ProjectionParams } from '../types/camera-types';
-import { CAMERA_HEIGHT } from '../utils/constants';
+import { CAMERA_HEIGHT, F_MAX } from '../utils/constants';
 import { Zoom } from '../types/zoom';
 
 describe('optimization', () => {
@@ -152,6 +152,24 @@ describe('optimization', () => {
       const distance = findMaximumDistance(zoom10.focalLength, 100);
       expect(distance).toBeLessThan(100);
       expect(distance).toBeGreaterThan(0);
+    });
+  });
+
+  describe('High Zoom Levels', () => {
+    it('should handle zoom levels above 25', () => {
+      // Test zoom 50
+      const zoom50 = new Zoom(50);
+      const distance50 = findMaximumDistance(zoom50.focalLength, 10);
+      expect(distance50).toBeGreaterThan(400); // Should be at least as good as zoom 25
+
+      // Test zoom 100
+      const zoom100 = new Zoom(100);
+      const distance100 = findMaximumDistance(zoom100.focalLength, 10);
+      expect(distance100).toBeGreaterThan(400); // Should be at least as good as zoom 25
+
+      // Focal length should be capped at F_MAX
+      expect(zoom50.focalLength).toBe(F_MAX);
+      expect(zoom100.focalLength).toBe(F_MAX);
     });
   });
 });

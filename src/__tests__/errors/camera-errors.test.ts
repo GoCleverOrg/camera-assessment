@@ -71,22 +71,22 @@ describe('ImpossibleConstraintError', () => {
 describe('InvalidZoomLevelError', () => {
   it('should create an error with formatted message for zoom below range', () => {
     const error = new InvalidZoomLevelError(0);
-    expect(error.message).toBe('Zoom level must be between 1 and 25, got: 0');
+    expect(error.message).toBe('Zoom level must be at least 1, got: 0');
   });
 
-  it('should create an error with formatted message for zoom above range', () => {
-    const error = new InvalidZoomLevelError(30);
-    expect(error.message).toBe('Zoom level must be between 1 and 25, got: 30');
+  it('should create an error with formatted message for invalid zoom', () => {
+    const error = new InvalidZoomLevelError(-10);
+    expect(error.message).toBe('Zoom level must be at least 1, got: -10');
   });
 
   it('should include decimal zoom levels in message', () => {
-    const error = new InvalidZoomLevelError(25.5);
-    expect(error.message).toBe('Zoom level must be between 1 and 25, got: 25.5');
+    const error = new InvalidZoomLevelError(0.5);
+    expect(error.message).toBe('Zoom level must be at least 1, got: 0.5');
   });
 
   it('should include negative zoom levels in message', () => {
     const error = new InvalidZoomLevelError(-5);
-    expect(error.message).toBe('Zoom level must be between 1 and 25, got: -5');
+    expect(error.message).toBe('Zoom level must be at least 1, got: -5');
   });
 
   it('should have correct name', () => {

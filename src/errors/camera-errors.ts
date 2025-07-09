@@ -25,11 +25,11 @@ export class ImpossibleConstraintError extends CameraAssessmentError {
 
 /**
  * Error thrown when an invalid zoom level is provided.
- * Zoom levels must be between 1 and 25.
+ * Zoom levels must be at least 1.
  */
 export class InvalidZoomLevelError extends CameraAssessmentError {
   constructor(zoomLevel: number) {
-    super(`Zoom level must be between 1 and 25, got: ${zoomLevel}`);
+    super(`Zoom level must be at least 1, got: ${zoomLevel}`);
     this.name = 'InvalidZoomLevelError';
     Object.setPrototypeOf(this, InvalidZoomLevelError.prototype);
   }

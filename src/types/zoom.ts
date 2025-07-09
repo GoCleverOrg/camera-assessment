@@ -3,7 +3,7 @@ import { F_MIN, F_MAX } from '../utils/constants';
 
 /**
  * Represents a camera zoom level with validation and focal length calculation.
- * Zoom levels must be between 1 and 25.
+ * Zoom levels must be at least 1.
  */
 export class Zoom {
   private _level: number;
@@ -11,11 +11,11 @@ export class Zoom {
 
   /**
    * Creates a Zoom instance with validation.
-   * @param level - The zoom level, must be between 1 and 25
-   * @throws {InvalidZoomLevelError} If zoom level is outside valid range
+   * @param level - The zoom level, must be at least 1
+   * @throws {InvalidZoomLevelError} If zoom level is less than 1
    */
   constructor(level: number) {
-    if (level < 1 || level > 25) {
+    if (level < 1) {
       throw new InvalidZoomLevelError(level);
     }
     this._level = level;

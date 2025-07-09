@@ -62,10 +62,10 @@ describe('CLI', () => {
 
     it('should error with invalid zoom level', () => {
       expect(() => {
-        execSync(`node ${cliPath} analyze --zoom 30 --gap 10`, {
+        execSync(`node ${cliPath} analyze --zoom 0 --gap 10`, {
           encoding: 'utf8',
         });
-      }).toThrow('out of range');
+      }).toThrow('Zoom values must be >= 1');
     });
 
     it('should error with negative gap', () => {
@@ -169,12 +169,13 @@ describe('CLI', () => {
         }).toThrow('Invalid zoom range');
       });
 
-      it('should error with zoom value out of range', () => {
-        expect(() => {
-          execSync(`node ${cliPath} analyze --zoom "20-30" --gap 10`, {
-            encoding: 'utf8',
-          });
-        }).toThrow('out of range');
+      it('should accept zoom values above 25', () => {
+        const output = execSync(`node ${cliPath} analyze --zoom "20-30" --gap 10`, {
+          encoding: 'utf8',
+        });
+        // Should display table with zoom 20-30
+        expect(output).toContain('| 20   |');
+        expect(output).toContain('| 30   |');
       });
 
       it('should handle single zoom value with string format', () => {

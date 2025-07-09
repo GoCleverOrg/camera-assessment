@@ -42,7 +42,7 @@ describe('Batch Processor', () => {
     });
 
     it('should handle partial failures gracefully', async () => {
-      const zoomLevels = [1, 50, 10]; // 50 is invalid (outside 1-25 range)
+      const zoomLevels = [1, 0, 10]; // 0 is invalid (must be at least 1)
       const options: BatchProcessingOptions = {
         gap: 45,
         generateImage: false,
@@ -58,10 +58,10 @@ describe('Batch Processor', () => {
       expect(results[0].analysis).toBeDefined();
 
       // Second zoom level should fail
-      expect(results[1].zoomLevel).toBe(50);
+      expect(results[1].zoomLevel).toBe(0);
       expect(results[1].success).toBe(false);
       expect(results[1].analysis).toBeUndefined();
-      expect(results[1].error).toContain('must be between 1 and 25');
+      expect(results[1].error).toContain('must be at least 1');
 
       // Third zoom level should still succeed
       expect(results[2].zoomLevel).toBe(10);

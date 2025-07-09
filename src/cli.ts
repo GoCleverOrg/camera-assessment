@@ -33,7 +33,7 @@ program
   .command('analyze')
   .alias('analyze-camera-view')
   .description('Analyze camera view for given zoom level and pixel gap')
-  .requiredOption('-z, --zoom <range>', 'Camera zoom level (1-25) or range (e.g., "1-5", "1,3,5")')
+  .requiredOption('-z, --zoom <range>', 'Camera zoom level (≥1) or range (e.g., "1-5", "1,3,5")')
   .requiredOption(
     '-g, --gap <number>',
     'Minimum vertical pixel separation between consecutive lines',
@@ -72,10 +72,10 @@ Examples:
         throw new Error(`Invalid zoom range: ${zoomResult.error}`);
       }
 
-      // Validate all zoom values are within 1-25
+      // Validate all zoom values are at least 1
       for (const zoomValue of zoomResult.values) {
-        if (zoomValue < 1 || zoomValue > 25) {
-          throw new Error(`Zoom level ${zoomValue} is out of range. Must be between 1 and 25.`);
+        if (zoomValue < 1) {
+          throw new Error(`Zoom level ${zoomValue} is out of range. Must be at least 1.`);
         }
       }
 

@@ -14,9 +14,16 @@ describe('Zoom', () => {
       expect(zoom.level).toBe(1);
     });
 
-    it('should accept maximum zoom level of 25', () => {
+    it('should accept zoom level of 25', () => {
       const zoom = new Zoom(25);
       expect(zoom.level).toBe(25);
+    });
+
+    it('should accept zoom level above 25', () => {
+      const zoom = new Zoom(50);
+      expect(zoom.level).toBe(50);
+      const zoom100 = new Zoom(100);
+      expect(zoom100.level).toBe(100);
     });
 
     it('should accept zoom level in the middle of the range', () => {
@@ -30,15 +37,15 @@ describe('Zoom', () => {
       expect(() => new Zoom(-1)).toThrow(InvalidZoomLevelError);
     });
 
-    it('should throw InvalidZoomLevelError for zoom level above 25', () => {
-      expect(() => new Zoom(26)).toThrow(InvalidZoomLevelError);
-      expect(() => new Zoom(25.1)).toThrow(InvalidZoomLevelError);
-      expect(() => new Zoom(100)).toThrow(InvalidZoomLevelError);
+    it('should not throw InvalidZoomLevelError for zoom level above 25', () => {
+      expect(() => new Zoom(26)).not.toThrow();
+      expect(() => new Zoom(100)).not.toThrow();
+      expect(() => new Zoom(1000)).not.toThrow();
     });
 
     it('should throw InvalidZoomLevelError with descriptive message', () => {
-      expect(() => new Zoom(0)).toThrow('Zoom level must be between 1 and 25, got: 0');
-      expect(() => new Zoom(30)).toThrow('Zoom level must be between 1 and 25, got: 30');
+      expect(() => new Zoom(0)).toThrow('Zoom level must be at least 1, got: 0');
+      expect(() => new Zoom(-5)).toThrow('Zoom level must be at least 1, got: -5');
     });
   });
 
