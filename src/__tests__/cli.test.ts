@@ -65,7 +65,7 @@ describe('CLI', () => {
         execSync(`node ${cliPath} analyze --zoom 30 --gap 10`, {
           encoding: 'utf8',
         });
-      }).toThrow('Zoom level must be a number between 1 and 25');
+      }).toThrow('out of range');
     });
 
     it('should error with negative gap', () => {
@@ -92,6 +92,103 @@ describe('CLI', () => {
       }).toThrow();
     });
 
+    describe('zoom range support', () => {
+      it('should analyze with zoom range 1-3', () => {
+        const output = execSync(`node ${cliPath} analyze --zoom "1-3" --gap 10`, {
+          encoding: 'utf8',
+        });
+        expect(output).toContain('Analyzing multiple zoom levels...');
+        expect(output).toContain(
+          '| Zoom | Max Distance (m) | Tilt Angle (°) | Line Count | Focal Length (mm) |',
+        );
+        expect(output).toContain('| 1    |');
+        expect(output).toContain('| 2    |');
+        expect(output).toContain('| 3    |');
+      });
+
+      it('should analyze with comma-separated zoom values', () => {
+        const output = execSync(`node ${cliPath} analyze --zoom "1,5,10" --gap 10`, {
+          encoding: 'utf8',
+        });
+        expect(output).toContain('Analyzing multiple zoom levels...');
+        expect(output).toContain('| 1    |');
+        expect(output).toContain('| 5    |');
+        expect(output).toContain('| 10   |');
+        expect(output).not.toContain('| 2    |');
+        expect(output).not.toContain('| 3    |');
+      });
+
+      it('should analyze with mixed range format', () => {
+        const output = execSync(`node ${cliPath} analyze --zoom "1-2,5,8-9" --gap 10`, {
+          encoding: 'utf8',
+        });
+        expect(output).toContain('Analyzing multiple zoom levels...');
+        expect(output).toContain('| 1    |');
+        expect(output).toContain('| 2    |');
+        expect(output).toContain('| 5    |');
+        expect(output).toContain('| 8    |');
+        expect(output).toContain('| 9    |');
+      });
+
+      it('should save CSV output when requested', () => {
+        const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'cli-test-csv-'));
+        const csvPath = path.join(tempDir, 'results.csv');
+
+        try {
+          const output = execSync(
+            `node ${cliPath} analyze --zoom "1-3" --gap 10 --csv-output ${csvPath}`,
+            {
+              encoding: 'utf8',
+            },
+          );
+
+          expect(output).toContain('CSV file saved to:');
+          expect(output).toContain(csvPath);
+          expect(fs.existsSync(csvPath)).toBe(true);
+
+          // Check CSV content
+          const csvContent = fs.readFileSync(csvPath, 'utf8');
+          expect(csvContent).toContain(
+            'Zoom,Max Distance (m),Tilt Angle (°),Line Count,Focal Length (mm)',
+          );
+          expect(csvContent).toContain('1,');
+          expect(csvContent).toContain('2,');
+          expect(csvContent).toContain('3,');
+        } finally {
+          if (fs.existsSync(tempDir)) {
+            fs.rmSync(tempDir, { recursive: true });
+          }
+        }
+      });
+
+      it('should error with invalid zoom range format', () => {
+        expect(() => {
+          execSync(`node ${cliPath} analyze --zoom "1-" --gap 10`, {
+            encoding: 'utf8',
+          });
+        }).toThrow('Invalid zoom range');
+      });
+
+      it('should error with zoom value out of range', () => {
+        expect(() => {
+          execSync(`node ${cliPath} analyze --zoom "20-30" --gap 10`, {
+            encoding: 'utf8',
+          });
+        }).toThrow('out of range');
+      });
+
+      it('should handle single zoom value with string format', () => {
+        const output = execSync(`node ${cliPath} analyze --zoom "5" --gap 10`, {
+          encoding: 'utf8',
+        });
+        // Should display single result format, not table
+        expect(output).toContain('Camera Analysis Results:');
+        expect(output).toContain('Maximum Distance:');
+        expect(output).toContain('220.00 meters');
+        expect(output).not.toContain('Analyzing multiple zoom levels...');
+      });
+    });
+
     describe('image generation', () => {
       let tempDir: string;
 
@@ -105,6 +202,18 @@ describe('CLI', () => {
         if (fs.existsSync(tempDir)) {
           fs.rmSync(tempDir, { recursive: true });
         }
+
+        // Clean up any default output directory files created by tests
+        const defaultOutputs = [
+          './output/camera-strips-z5-g10.png',
+          './output/camera-strips-z5-g10-transparent.png',
+        ];
+
+        defaultOutputs.forEach((file) => {
+          if (fs.existsSync(file)) {
+            fs.unlinkSync(file);
+          }
+        });
       });
 
       it('should generate image with black background', () => {
@@ -217,6 +326,20 @@ describe('CLI', () => {
         expect(output).toContain('Camera Analysis Results:');
         expect(output).not.toContain('Generating image');
         expect(output).not.toContain('Image generated successfully');
+      });
+
+      it('should generate multiple images when requested with multiple zooms', () => {
+        const outputDir = path.join(tempDir, 'multi-zoom');
+        const output = execSync(
+          `node ${cliPath} analyze --zoom "1-3" --gap 10 --generate-image --output ${outputDir}/img`,
+          {
+            encoding: 'utf8',
+          },
+        );
+        expect(output).toContain('Generated 3 images:');
+        expect(fs.existsSync(path.join(outputDir, 'img-z1-g10.png'))).toBe(true);
+        expect(fs.existsSync(path.join(outputDir, 'img-z2-g10.png'))).toBe(true);
+        expect(fs.existsSync(path.join(outputDir, 'img-z3-g10.png'))).toBe(true);
       });
     });
   });

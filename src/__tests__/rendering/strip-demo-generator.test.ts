@@ -3,24 +3,20 @@ import { Zoom } from '../../types/zoom';
 import { NoVisibleStripsError, ImageGenerationError } from '../../errors/rendering-errors';
 import * as fs from 'fs';
 import * as path from 'path';
+import * as os from 'os';
 
 describe('generateStripDemoImage', () => {
-  const testOutputDir = path.join(__dirname, '../../../test-output');
+  let testOutputDir: string;
 
   beforeEach(async () => {
-    // Ensure test output directory exists
-    await fs.promises.mkdir(testOutputDir, { recursive: true });
+    // Create a unique temporary directory for this test run
+    testOutputDir = await fs.promises.mkdtemp(path.join(os.tmpdir(), 'strip-demo-test-'));
   });
 
   afterEach(async () => {
-    // Clean up test files
+    // Clean up temporary directory
     try {
-      const files = await fs.promises.readdir(testOutputDir);
-      for (const file of files) {
-        if (file.endsWith('.png')) {
-          await fs.promises.unlink(path.join(testOutputDir, file));
-        }
-      }
+      await fs.promises.rm(testOutputDir, { recursive: true, force: true });
     } catch {
       // Ignore cleanup errors
     }

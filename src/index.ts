@@ -19,3 +19,6 @@ export { NoVisibleStripsError, ImageGenerationError } from './errors/rendering-e
 // Rendering utilities
 export { generateStripVisualizations } from './rendering/strip-visualizer';
 export { generateStripDemoImage } from './rendering/strip-demo-generator';
+
+// Table formatting utilities
+export { TableFormatter, type TableRow } from './utils/table-formatter';
