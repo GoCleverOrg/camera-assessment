@@ -284,8 +284,9 @@ describe('Image Generator', () => {
       expect(svg).toMatch(/<line[^>]*y1="720"[^>]*stroke="#FFFF00"/); // Second strip highlighted
       expect(svg).toMatch(/<line[^>]*y1="1152"[^>]*stroke="#FFFF00"/); // Third strip highlighted
 
-      // Check for pixel gap annotation
-      expect(svg).toContain('432px'); // Gap between last two strips
+      // No pixel gap annotation or labels should be present
+      expect(svg).not.toContain('px'); // No pixel measurements
+      expect(svg).not.toContain('<text'); // No text elements
     });
 
     it('should create SVG with text annotations', () => {

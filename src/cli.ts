@@ -42,7 +42,7 @@ program
   .option('-i, --generate-image', 'Generate a demonstration image showing visible strips')
   .option(
     '-o, --output <path>',
-    'Output path for the generated image (defaults to ./camera-strips-z{zoom}-g{gap}.png)',
+    'Output path for the generated image (defaults to ./output/camera-strips-z{zoom}-g{gap}.png)',
   )
   .option('-t, --transparent', 'Create image with transparent background')
   .addHelpText(
@@ -103,8 +103,9 @@ Examples:
           console.log(chalk.cyan('🎨 Generating image...'));
 
           // Generate default output path if not provided
-          const outputPath = options.output || 
-            `./camera-strips-z${options.zoom}-g${options.gap}${options.transparent ? '-transparent' : ''}.png`;
+          const outputPath =
+            options.output ||
+            `./output/camera-strips-z${options.zoom}-g${options.gap}${options.transparent ? '-transparent' : ''}.png`;
 
           // Ensure output directory exists
           const outputDir = path.dirname(outputPath);

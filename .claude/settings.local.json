@@ -22,7 +22,9 @@
       "Bash(chmod:*)",
       "Bash(ts-node:*)",
       "Bash(git add:*)",
-      "Bash(git commit:*)"
+      "Bash(git commit:*)",
+      "Bash(./dist/cli.js analyze:*)",
+      "Bash(touch:*)"
     ],
     "deny": []
   }

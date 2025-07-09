@@ -39,8 +39,36 @@ export function findOptimalTilt(targetDistance: number, focalLength: number): nu
 
 export function findMaximumDistance(focalLength: number, minPixelGap: number): number {
   let left = 0;
-  let right = 200; // Maximum reasonable distance
+  let right = 1000; // Initial guess, will expand if needed
+  const maxIterations = 50; // Safety limit to prevent infinite loops
+  let iterations = 0;
 
+  // First, expand the upper bound if needed
+  while (iterations < maxIterations) {
+    const testDistance = Math.floor(right / LINE_SPACING) * LINE_SPACING;
+    if (testDistance <= 0) break;
+
+    const optimalTilt = findOptimalTilt(testDistance, focalLength);
+    const params: ProjectionParams = {
+      focalLength,
+      tiltAngle: optimalTilt,
+      cameraHeight: CAMERA_HEIGHT,
+    };
+
+    const gap = computePixelGap(testDistance, testDistance - LINE_SPACING, params);
+
+    // If we can still achieve the minimum gap at this distance, double the bound
+    if (gap >= minPixelGap) {
+      left = right;
+      right *= 2;
+      iterations++;
+    } else {
+      // Found an upper bound where the gap is too small
+      break;
+    }
+  }
+
+  // Now perform binary search within the established bounds
   while (right - left > DISTANCE_TOLERANCE) {
     const mid = (left + right) / 2;
     const distance = Math.floor(mid / LINE_SPACING) * LINE_SPACING;
@@ -97,8 +125,36 @@ export function findMaximumDistanceWithDetails(
   minPixelGap: number,
 ): MaximumDistanceResult {
   let left = 0;
-  let right = 200; // Maximum reasonable distance
+  let right = 1000; // Initial guess, will expand if needed
+  const maxIterations = 50; // Safety limit to prevent infinite loops
+  let iterations = 0;
 
+  // First, expand the upper bound if needed
+  while (iterations < maxIterations) {
+    const testDistance = Math.floor(right / LINE_SPACING) * LINE_SPACING;
+    if (testDistance <= 0) break;
+
+    const optimalTilt = findOptimalTilt(testDistance, focalLength);
+    const params: ProjectionParams = {
+      focalLength,
+      tiltAngle: optimalTilt,
+      cameraHeight: CAMERA_HEIGHT,
+    };
+
+    const gap = computePixelGap(testDistance, testDistance - LINE_SPACING, params);
+
+    // If we can still achieve the minimum gap at this distance, double the bound
+    if (gap >= minPixelGap) {
+      left = right;
+      right *= 2;
+      iterations++;
+    } else {
+      // Found an upper bound where the gap is too small
+      break;
+    }
+  }
+
+  // Now perform binary search within the established bounds
   while (right - left > DISTANCE_TOLERANCE) {
     const mid = (left + right) / 2;
     const distance = Math.floor(mid / LINE_SPACING) * LINE_SPACING;

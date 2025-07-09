@@ -31,11 +31,11 @@ describe('CLI', () => {
       });
       expect(output).toContain('Camera Analysis Results:');
       expect(output).toContain('Maximum Distance:');
-      expect(output).toContain('198.00 meters');
+      expect(output).toContain('220.00 meters');
       expect(output).toContain('Optimal Tilt Angle:');
-      expect(output).toContain('8.49°');
+      expect(output).toContain('7.91°');
       expect(output).toContain('Visible Line Count:');
-      expect(output).toContain('99 lines');
+      expect(output).toContain('110 lines');
       expect(output).toContain('Focal Length:');
       expect(output).toContain('24.00 mm');
     });
@@ -55,9 +55,9 @@ describe('CLI', () => {
         encoding: 'utf8',
       });
       expect(output).toContain('Maximum Distance:');
-      expect(output).toContain('198.00 meters');
+      expect(output).toContain('696.00 meters');
       expect(output).toContain('Visible Line Count:');
-      expect(output).toContain('99 lines');
+      expect(output).toContain('348 lines');
     });
 
     it('should error with invalid zoom level', () => {
@@ -172,12 +172,41 @@ describe('CLI', () => {
         expect(fs.existsSync(nestedPath)).toBe(true);
       });
 
-      it('should error when --generate-image is used without --output', () => {
-        expect(() => {
-          execSync(`node ${cliPath} analyze --zoom 5 --gap 10 --generate-image`, {
+      it('should generate image with default filename when no output is specified', () => {
+        const defaultPath = './output/camera-strips-z5-g10.png';
+
+        // Clean up any existing file
+        if (fs.existsSync(defaultPath)) {
+          fs.unlinkSync(defaultPath);
+        }
+
+        const output = execSync(`node ${cliPath} analyze --zoom 5 --gap 10 --generate-image`, {
+          encoding: 'utf8',
+        });
+
+        expect(output).toContain('Image generated successfully!');
+        expect(output).toContain(defaultPath);
+        expect(fs.existsSync(defaultPath)).toBe(true);
+      });
+
+      it('should generate transparent image with default filename including transparent suffix', () => {
+        const defaultPath = './output/camera-strips-z5-g10-transparent.png';
+
+        // Clean up any existing file
+        if (fs.existsSync(defaultPath)) {
+          fs.unlinkSync(defaultPath);
+        }
+
+        const output = execSync(
+          `node ${cliPath} analyze --zoom 5 --gap 10 --generate-image --transparent`,
+          {
             encoding: 'utf8',
-          });
-        }).toThrow('Output path is required when generating an image');
+          },
+        );
+
+        expect(output).toContain('Image generated successfully!');
+        expect(output).toContain(defaultPath);
+        expect(fs.existsSync(defaultPath)).toBe(true);
       });
 
       it('should still work without image generation (backward compatibility)', () => {

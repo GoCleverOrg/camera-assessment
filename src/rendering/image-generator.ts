@@ -148,8 +148,8 @@ export function createStripsSVG(
   // Start SVG
   let svg = `<svg width="${width}" height="${height}" xmlns="http://www.w3.org/2000/svg">`;
 
-  // Add strip lines
-  strips.forEach((strip, index) => {
+  // Add strip lines only - no labels or annotations
+  strips.forEach((strip) => {
     const yPosition = Math.round(strip.position * height);
     const color = strip.isHighlighted
       ? style.highlightColor
@@ -159,39 +159,7 @@ export function createStripsSVG(
     svg += `<line x1="0" y1="${yPosition}" x2="${width}" y2="${yPosition}" `;
     svg += `stroke="${color}" stroke-width="${style.thickness}" `;
     svg += `opacity="${opacity}" />`;
-
-    // Add strip index label (small, unobtrusive)
-    const labelX = 10;
-    const labelY = yPosition - 5;
-    svg += `<text x="${labelX}" y="${labelY}" font-family="Arial" font-size="10" `;
-    svg += `fill="${TEXT_COLOR}" stroke="${TEXT_OUTLINE_COLOR}" stroke-width="0.5">`;
-    svg += `${index + 1}</text>`;
   });
-
-  // Add pixel gap annotation between furthest two strips if we have at least 2 strips
-  if (strips.length >= 2) {
-    const furthestStrips = strips.slice(-2);
-    const y1 = Math.round(furthestStrips[0].position * height);
-    const y2 = Math.round(furthestStrips[1].position * height);
-    const pixelGap = Math.abs(y2 - y1);
-
-    // Draw a measurement line
-    const measureX = width - 100;
-    svg += `<line x1="${measureX}" y1="${y1}" x2="${measureX}" y2="${y2}" `;
-    svg += `stroke="${TEXT_COLOR}" stroke-width="1" stroke-dasharray="2,2" />`;
-
-    // Add end caps
-    svg += `<line x1="${measureX - 5}" y1="${y1}" x2="${measureX + 5}" y2="${y1}" `;
-    svg += `stroke="${TEXT_COLOR}" stroke-width="1" />`;
-    svg += `<line x1="${measureX - 5}" y1="${y2}" x2="${measureX + 5}" y2="${y2}" `;
-    svg += `stroke="${TEXT_COLOR}" stroke-width="1" />`;
-
-    // Add gap label
-    const midY = (y1 + y2) / 2;
-    svg += `<text x="${measureX + 10}" y="${midY + 4}" font-family="Arial" font-size="14" `;
-    svg += `fill="${TEXT_COLOR}" stroke="${TEXT_OUTLINE_COLOR}" stroke-width="0.5">`;
-    svg += `${pixelGap}px</text>`;
-  }
 
   // Add custom text annotations
   annotations.forEach((annotation) => {

@@ -52,41 +52,7 @@ export async function generateStripDemoImage(
   // Step 3: Generate strip visualizations from the analysis
   const stripVisualizations = generateStripVisualizations(analysis);
 
-  // Step 4: Calculate pixel gap annotation for furthest strips
-  let pixelGapText = '';
-  if (stripVisualizations.length >= 2) {
-    // Calculate the pixel gap between the furthest two strips
-    const furthestStrips = stripVisualizations.slice(-2);
-    const y1 = Math.round(furthestStrips[0].position * SENSOR_RES_Y);
-    const y2 = Math.round(furthestStrips[1].position * SENSOR_RES_Y);
-    const pixelGap = Math.abs(y2 - y1);
-    pixelGapText = `Gap: ${pixelGap}px`;
-  }
-
-  // Step 5: Prepare text overlays
-  const textOverlays = [];
-
-  // Add main title
-  textOverlays.push({
-    text: `Zoom: ${zoom.level}x | Strips: ${analysis.lineCount}`,
-    x: SENSOR_RES_X / 2,
-    y: 30,
-    fontSize: 20,
-    align: 'center' as const,
-  });
-
-  // Add pixel gap info if we have multiple strips
-  if (pixelGapText && analysis.lineCount >= 2) {
-    textOverlays.push({
-      text: pixelGapText,
-      x: SENSOR_RES_X / 2,
-      y: 60,
-      fontSize: 16,
-      align: 'center' as const,
-    });
-  }
-
-  // Step 6: Create composition options for rendering
+  // Step 4: Create composition options for rendering (no text overlays)
   const compositionOptions = {
     width: SENSOR_RES_X,
     height: SENSOR_RES_Y,
@@ -101,14 +67,10 @@ export async function generateStripDemoImage(
           outputPath, // Pass the output path through to the renderer
         },
       },
-      ...textOverlays.map((overlay) => ({
-        type: 'text' as const,
-        data: overlay,
-      })),
     ],
   };
 
-  // Step 7: Render the image
+  // Step 5: Render the image
   const renderResult = await renderStripsToImage(compositionOptions);
 
   return renderResult;
