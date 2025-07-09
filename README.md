@@ -215,7 +215,7 @@ The tool provides clear error messages for common issues:
 
 ### Building from Source
 ```bash
-git clone https://github.com/goclever/camera-assessment.git
+git clone https://github.com/GoCleverOrg/camera-assessment.git
 cd camera-assessment
 pnpm install
 pnpm run build
@@ -266,7 +266,7 @@ MIT License - see LICENSE file for details
 ## Support
 
 For issues, feature requests, or questions:
-- GitHub Issues: [camera-assessment/issues](https://github.com/goclever/camera-assessment/issues)
+- GitHub Issues: [camera-assessment/issues](https://github.com/GoCleverOrg/camera-assessment/issues)
 - Documentation: See this README and inline JSDoc comments
 
 ---
