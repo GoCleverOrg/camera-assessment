@@ -1,5 +1,7 @@
 import { execSync } from 'child_process';
 import * as path from 'path';
+import * as fs from 'fs';
+import * as os from 'os';
 
 describe('CLI', () => {
   const cliPath = path.resolve(__dirname, '../../dist/cli.js');
@@ -17,6 +19,10 @@ describe('CLI', () => {
       expect(output).toContain('Analyze camera view for given zoom level and pixel gap');
       expect(output).toContain('--zoom');
       expect(output).toContain('--gap');
+      expect(output).toContain('--generate-image');
+      expect(output).toContain('--output');
+      expect(output).toContain('--transparent');
+      expect(output).toContain('Examples:');
     });
 
     it('should analyze with valid inputs', () => {
@@ -84,6 +90,105 @@ describe('CLI', () => {
           encoding: 'utf8',
         });
       }).toThrow();
+    });
+
+    describe('image generation', () => {
+      let tempDir: string;
+
+      beforeEach(() => {
+        // Create a temporary directory for test outputs
+        tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'cli-test-'));
+      });
+
+      afterEach(() => {
+        // Clean up temporary directory
+        if (fs.existsSync(tempDir)) {
+          fs.rmSync(tempDir, { recursive: true });
+        }
+      });
+
+      it('should generate image with black background', () => {
+        const outputPath = path.join(tempDir, 'test-black.png');
+        const output = execSync(
+          `node ${cliPath} analyze --zoom 5 --gap 10 --generate-image --output ${outputPath}`,
+          {
+            encoding: 'utf8',
+          },
+        );
+
+        // Check console output
+        expect(output).toContain('Camera Analysis Results:');
+        expect(output).toContain('Generating image...');
+        expect(output).toContain('Image generated successfully!');
+        expect(output).toContain(outputPath);
+        expect(output).toContain('Strips Rendered:');
+
+        // Check file exists
+        expect(fs.existsSync(outputPath)).toBe(true);
+      });
+
+      it('should generate image with transparent background', () => {
+        const outputPath = path.join(tempDir, 'test-transparent.png');
+        const output = execSync(
+          `node ${cliPath} analyze --zoom 5 --gap 10 --generate-image --transparent --output ${outputPath}`,
+          {
+            encoding: 'utf8',
+          },
+        );
+
+        // Check console output
+        expect(output).toContain('Camera Analysis Results:');
+        expect(output).toContain('Generating image...');
+        expect(output).toContain('Image generated successfully!');
+
+        // Check file exists
+        expect(fs.existsSync(outputPath)).toBe(true);
+      });
+
+      it('should work with analyze-camera-view alias', () => {
+        const outputPath = path.join(tempDir, 'test-alias.png');
+        const output = execSync(
+          `node ${cliPath} analyze-camera-view --zoom 10 --gap 50 --generate-image --output ${outputPath}`,
+          {
+            encoding: 'utf8',
+          },
+        );
+
+        expect(output).toContain('Camera Analysis Results:');
+        expect(output).toContain('Image generated successfully!');
+        expect(fs.existsSync(outputPath)).toBe(true);
+      });
+
+      it('should create output directory if it does not exist', () => {
+        const nestedPath = path.join(tempDir, 'nested', 'dir', 'test.png');
+        const output = execSync(
+          `node ${cliPath} analyze --zoom 5 --gap 10 --generate-image --output ${nestedPath}`,
+          {
+            encoding: 'utf8',
+          },
+        );
+
+        expect(output).toContain('Image generated successfully!');
+        expect(fs.existsSync(nestedPath)).toBe(true);
+      });
+
+      it('should error when --generate-image is used without --output', () => {
+        expect(() => {
+          execSync(`node ${cliPath} analyze --zoom 5 --gap 10 --generate-image`, {
+            encoding: 'utf8',
+          });
+        }).toThrow('Output path is required when generating an image');
+      });
+
+      it('should still work without image generation (backward compatibility)', () => {
+        const output = execSync(`node ${cliPath} analyze --zoom 5 --gap 10`, {
+          encoding: 'utf8',
+        });
+
+        expect(output).toContain('Camera Analysis Results:');
+        expect(output).not.toContain('Generating image');
+        expect(output).not.toContain('Image generated successfully');
+      });
     });
   });
 
