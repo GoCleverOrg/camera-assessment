@@ -35,11 +35,11 @@ describe('projection system', () => {
         cameraHeight: 20,
       };
 
-      // When looking horizontally, a point at the same height as camera (y=0 in world)
-      // should project to center of image
+      // When looking horizontally from 20m height at a ground point 10m away,
+      // the point is 20m below the camera and should project far below center
       const result = projectGroundPoint(10, params);
       expect(result.x).toBe(1280); // Center X
-      expect(result.y).toBeCloseTo(720, 1); // Should be close to center Y
+      expect(result.y).toBeGreaterThan(1440); // Should be below the sensor bottom
     });
   });
 });

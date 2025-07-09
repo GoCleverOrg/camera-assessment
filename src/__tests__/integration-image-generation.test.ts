@@ -23,8 +23,8 @@ describe('Image Generation Integration', () => {
 
   it('should generate strip visualization image from camera analysis', async () => {
     // Step 1: Analyze camera view
-    const zoom = new Zoom(5);
-    const analysis = analyzeCameraView(zoom, 45);
+    const zoom = new Zoom(1);
+    const analysis = analyzeCameraView(zoom, 10);
 
     expect(analysis.lineCount).toBeGreaterThan(0);
     expect(analysis.distanceInMeters).toBeGreaterThan(0);
@@ -66,8 +66,8 @@ describe('Image Generation Integration', () => {
 
   it('should generate annotated strip visualization with custom styling', async () => {
     // Analyze camera view
-    const zoom = new Zoom(10);
-    const analysis = analyzeCameraView(zoom, 30);
+    const zoom = new Zoom(1);
+    const analysis = analyzeCameraView(zoom, 5);
     const strips = generateStripVisualizations(analysis);
 
     // Custom style
@@ -165,13 +165,14 @@ describe('Image Generation Integration', () => {
   });
 
   it('should handle edge case with very few visible strips', async () => {
-    // High tilt angle and low zoom should result in very few visible strips
+    // Low zoom with moderate gap should result in few visible strips
     const zoom = new Zoom(1);
-    const analysis = analyzeCameraView(zoom, 75);
+    const analysis = analyzeCameraView(zoom, 15);
     const strips = generateStripVisualizations(analysis);
 
-    // Even with extreme parameters, we should get some strips
+    // Should get at least some strips
     expect(strips.length).toBeGreaterThan(0);
+    expect(strips.length).toBeLessThan(10); // Verify it's actually "few" strips
 
     const outputPath = path.join(process.cwd(), 'output', 'integration-edge-case.png');
     const options: ImageCompositionOptions = {

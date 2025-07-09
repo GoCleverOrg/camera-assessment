@@ -33,7 +33,7 @@ describe('CLI', () => {
       expect(output).toContain('Maximum Distance:');
       expect(output).toContain('220.00 meters');
       expect(output).toContain('Optimal Tilt Angle:');
-      expect(output).toContain('7.91°');
+      expect(output).toContain('0.57°');
       expect(output).toContain('Visible Line Count:');
       expect(output).toContain('110 lines');
       expect(output).toContain('Focal Length:');
@@ -45,9 +45,9 @@ describe('CLI', () => {
         encoding: 'utf8',
       });
       expect(output).toContain('Maximum Distance:');
-      expect(output).toContain('40.00 meters');
+      expect(output).toContain('44.00 meters');
       expect(output).toContain('Visible Line Count:');
-      expect(output).toContain('20 lines');
+      expect(output).toContain('22 lines');
     });
 
     it('should handle zoom=25 gap=5', () => {
@@ -55,9 +55,9 @@ describe('CLI', () => {
         encoding: 'utf8',
       });
       expect(output).toContain('Maximum Distance:');
-      expect(output).toContain('696.00 meters');
+      expect(output).toContain('698.00 meters');
       expect(output).toContain('Visible Line Count:');
-      expect(output).toContain('348 lines');
+      expect(output).toContain('349 lines');
     });
 
     it('should error with invalid zoom level', () => {

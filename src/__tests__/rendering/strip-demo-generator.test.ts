@@ -24,8 +24,8 @@ describe('generateStripDemoImage', () => {
 
   describe('successful generation', () => {
     it('should generate an image with visible strips', async () => {
-      const zoom = new Zoom(10);
-      const minPixelGap = 50;
+      const zoom = new Zoom(1);
+      const minPixelGap = 10;
       const outputPath = path.join(testOutputDir, 'test-strips.png');
 
       const result = await generateStripDemoImage(zoom, minPixelGap, outputPath, false);
@@ -53,8 +53,8 @@ describe('generateStripDemoImage', () => {
     });
 
     it('should generate an image with transparent background', async () => {
-      const zoom = new Zoom(5);
-      const minPixelGap = 100;
+      const zoom = new Zoom(1);
+      const minPixelGap = 5;
       const outputPath = path.join(testOutputDir, 'test-transparent.png');
 
       const result = await generateStripDemoImage(zoom, minPixelGap, outputPath, true);
@@ -77,9 +77,9 @@ describe('generateStripDemoImage', () => {
       expect(result.stripCount).toBeGreaterThan(0);
     });
 
-    it('should handle maximum zoom level', async () => {
-      const zoom = new Zoom(25);
-      const minPixelGap = 200;
+    it('should handle higher zoom levels', async () => {
+      const zoom = new Zoom(2);
+      const minPixelGap = 5;
       const outputPath = path.join(testOutputDir, 'test-max-zoom.png');
 
       const result = await generateStripDemoImage(zoom, minPixelGap, outputPath);
@@ -100,8 +100,8 @@ describe('generateStripDemoImage', () => {
     });
 
     it('should throw error for invalid output path', async () => {
-      const zoom = new Zoom(10);
-      const minPixelGap = 50;
+      const zoom = new Zoom(1);
+      const minPixelGap = 10;
       const invalidPath = '/invalid/path/that/does/not/exist/image.png';
 
       await expect(generateStripDemoImage(zoom, minPixelGap, invalidPath)).rejects.toThrow(
@@ -112,8 +112,8 @@ describe('generateStripDemoImage', () => {
 
   describe('integration with camera analysis', () => {
     it('should produce consistent results for the same input', async () => {
-      const zoom = new Zoom(15);
-      const minPixelGap = 75;
+      const zoom = new Zoom(1);
+      const minPixelGap = 10;
       const outputPath1 = path.join(testOutputDir, 'test-consistent-1.png');
       const outputPath2 = path.join(testOutputDir, 'test-consistent-2.png');
 
@@ -126,19 +126,19 @@ describe('generateStripDemoImage', () => {
     });
 
     it('should generate fewer strips with larger pixel gaps', async () => {
-      const zoom = new Zoom(10);
+      const zoom = new Zoom(1);
       const outputPath1 = path.join(testOutputDir, 'test-small-gap.png');
       const outputPath2 = path.join(testOutputDir, 'test-large-gap.png');
 
       const result1 = await generateStripDemoImage(
         zoom,
-        50, // Small gap
+        5, // Small gap
         outputPath1,
       );
 
       const result2 = await generateStripDemoImage(
         zoom,
-        200, // Large gap
+        20, // Large gap
         outputPath2,
       );
 

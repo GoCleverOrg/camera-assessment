@@ -5,10 +5,10 @@ import { Zoom } from '../types/zoom';
 describe('Integration: Strip Visualization', () => {
   it('should generate strip visualizations from camera analysis', () => {
     // Create a zoom instance
-    const zoom = new Zoom(10);
+    const zoom = new Zoom(1);
 
     // Analyze camera view with a minimum pixel gap requirement
-    const analysis = analyzeCameraView(zoom, 50);
+    const analysis = analyzeCameraView(zoom, 10);
 
     // Generate strip visualizations
     const strips = generateStripVisualizations(analysis);

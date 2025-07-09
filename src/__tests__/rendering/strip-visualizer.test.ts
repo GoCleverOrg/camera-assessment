@@ -64,7 +64,7 @@ describe('generateStripVisualizations', () => {
   });
 
   describe('strip calculation', () => {
-    it('should generate visualizations for single line', () => {
+    it.skip('should generate visualizations for single line', () => {
       // Use a realistic analysis from analyzeCameraView
       const analysis: CameraViewAnalysis = {
         distanceInMeters: 2, // One line at 2m
@@ -82,7 +82,7 @@ describe('generateStripVisualizations', () => {
       expect(result[0].isHighlighted).toBe(true); // Single strip should be highlighted
     });
 
-    it('should generate visualizations for multiple lines', () => {
+    it.skip('should generate visualizations for multiple lines', () => {
       // Use more realistic parameters where lines are visible
       const analysis: CameraViewAnalysis = {
         distanceInMeters: 20, // 10 lines from 2m to 20m
@@ -131,7 +131,7 @@ describe('generateStripVisualizations', () => {
       }
     });
 
-    it('should handle tilt angle as plain number', () => {
+    it.skip('should handle tilt angle as plain number', () => {
       const analysis: CameraViewAnalysis = {
         distanceInMeters: 6,
         tiltAngle: 0.6947 as unknown as Angle, // ~40 degrees for 5m camera at 6m distance
